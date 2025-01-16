@@ -7,7 +7,7 @@ import DropDown from "./Filters/DropDown";
 
 const Home = () => {
   return (
-    <div className="flex flex-col items-center gap-3 justify-center text-3xl h-full bg-[#F5F5F5] md:pl-44 md:pt-8 px-20 pt-8 pb-28 md:pb-2">
+    <div className="flex flex-col items-center gap-3 justify-center text-3xl h-full bg-[#F5F5F5] md:pl-24 md:pt-8 px-20 pt-8 pb-28 md:pb-2">
       <div className="flex items-start justify-start">
         <h2 className="font-oxygen font-bold">Filter By:</h2>
       </div>

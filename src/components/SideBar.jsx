@@ -23,7 +23,7 @@ const SideBar = () => {
       {/* Navbar for Laptop view */}
       <motion.nav
         initial={{ width: 300 }}
-        animate={{ width: isClosed ? 150 : 300 }}
+        animate={{ width: isClosed ? 75 : 300 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="hidden md:z-50 md:fixed md:flex md:flex-col md:gap-28 md:bg-cecOrange md:h-full md:px-8 md:py-8"
       >
@@ -45,7 +45,7 @@ const SideBar = () => {
             <ArrowLeft className="text-white" />
           </div>
           <Menu
-            size={80}
+            size={50}
             className={`${isClosed ? "block" : "hidden"} cursor-pointer`}
             onClick={handleClose}
           />
@@ -59,7 +59,10 @@ const SideBar = () => {
                   isHomeActive ? "text-white" : "text-black"
                 }`}
               >
-                <Home size={isClosed ? 30 : 20} />
+                <Home
+                  size={isClosed ? 30 : 20}
+                  className={`${isClosed && "ml-2"}`}
+                />
                 <h2
                   className={`font-raleway font-semibold ${
                     isClosed && "hidden"
@@ -79,7 +82,10 @@ const SideBar = () => {
                     : "text-black"
                 }`}
               >
-                <User size={isClosed ? 30 : 20} />
+                <User
+                  size={isClosed ? 30 : 20}
+                  className={`${isClosed && "ml-2"}`}
+                />
                 <h2
                   className={`font-raleway font-semibold ${
                     isClosed && "hidden"
@@ -93,7 +99,10 @@ const SideBar = () => {
         </ul>
 
         <div className="flex gap-2 items-center justify-start rounded-md hover:bg-[#8B6200] px-1 py-1 cursor-pointer">
-          <LogOut size={isClosed ? 30 : 20} />
+          <LogOut
+            size={isClosed ? 30 : 20}
+            className={`${isClosed && "ml-2"}`}
+          />
           <h2 className={`font-raleway font-semibold ${isClosed && "hidden"} `}>
             Logout
           </h2>
