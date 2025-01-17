@@ -25,7 +25,9 @@ const SideBar = () => {
         initial={{ width: 300 }}
         animate={{ width: isClosed ? 75 : 300 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="hidden md:z-50 md:fixed md:flex md:flex-col md:gap-28 md:bg-cecOrange md:h-full md:px-8 md:py-8"
+        className={`hidden md:z-50 md:fixed md:flex md:flex-col md:gap-28 md:bg-cecOrange md:h-full  ${
+          isClosed ? "px-2 py-2" : "px-8 py-8"
+        } `}
       >
         <div
           id="logo"
@@ -56,7 +58,7 @@ const SideBar = () => {
             <Link to={"/"}>
               <div
                 className={`flex gap-2 items-center justify-start rounded-md hover:bg-[#8B6200] px-1 py-1 cursor-pointer ${
-                  isHomeActive ? "text-white" : "text-black"
+                  location.pathname === "/" ? "text-white" : "text-black"
                 }`}
               >
                 <Home

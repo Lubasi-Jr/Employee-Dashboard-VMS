@@ -9,7 +9,7 @@ const Visitors = () => {
       <div className="flex items-start justify-start">
         <h2 className="font-oxygen font-bold">Search By:</h2>
       </div>
-      <div className="rounded-md w-1/2 h-auto bg-[#F5F5F5] px-4 py-4 flex flex-col gap-5">
+      <div className="rounded-md w-full h-auto bg-[#F5F5F5] px-4 py-4 flex flex-col lg:flex-row items-start justify-start gap-5">
         <div className="flex flex-col gap-2">
           <label htmlFor="" className="text-base">
             Name
@@ -33,10 +33,9 @@ const Visitors = () => {
         <div className="flex items-center justify-center gap-6">
           <button
             type="button"
-            className="text-white w-1/2 hover:text-cecOrange border border-cecOrange bg-cecOrange hover:bg-white font-medium rounded-lg text-sm md:text-md lg:text-lg px-5 py-2.5 text-center me-2 mb-2 flex gap-1 justify-center items-center"
+            className="text-white w-[40px] h-[40px] hover:text-cecOrange border border-cecOrange bg-cecOrange hover:bg-white font-sm rounded-full text-sm md:text-md lg:text-lg px-1 py-1 text-center mt-8 flex gap-1 justify-center items-center"
           >
             <Search size={30} />
-            <p>Search</p>
           </button>
         </div>
       </div>
