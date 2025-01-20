@@ -1,11 +1,16 @@
 import { useEffect } from "react";
 
-const DatePicker = () => {
+const DatePicker = ({ handleDateChange }) => {
   useEffect(() => {
     const datepickerEl = document.getElementById("datepicker");
     const datepicker = new Datepicker(datepickerEl, {
       autohide: true,
       format: "yyyy-mm-dd",
+    });
+
+    //Add an onChange listener to this vanilla javascript date picker
+    datepickerEl.addEventListener("changeDate", (event) => {
+      handleDateChange(event.target.value); // Use the value of the input field
     });
   }, []);
 

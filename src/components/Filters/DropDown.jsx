@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 
-const DropDown = () => {
+const DropDown = ({ handlePurposeChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("Select");
-
-  const handleClick = (event) => {
-    setSelected(event.target.name);
-    setIsOpen(!isOpen);
-  };
 
   return (
     <div>
@@ -40,7 +35,11 @@ const DropDown = () => {
             <li>
               <button
                 name="Business"
-                onClick={handleClick}
+                onClick={() => {
+                  setSelected("Business");
+                  handlePurposeChange("Business");
+                  setIsOpen(!isOpen);
+                }}
                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 Business
@@ -49,7 +48,11 @@ const DropDown = () => {
             <li>
               <button
                 name="Induction"
-                onClick={handleClick}
+                onClick={() => {
+                  setSelected("Induction");
+                  handlePurposeChange("Induction");
+                  setIsOpen(!isOpen);
+                }}
                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 Induction
@@ -58,7 +61,11 @@ const DropDown = () => {
             <li>
               <button
                 name="Other"
-                onClick={handleClick}
+                onClick={() => {
+                  setSelected("Other");
+                  handlePurposeChange("Other");
+                  setIsOpen(!isOpen);
+                }}
                 className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
                 Other
@@ -67,7 +74,11 @@ const DropDown = () => {
             <li>
               <button
                 name="Select"
-                onClick={handleClick}
+                onClick={() => {
+                  setSelected("Select");
+                  handlePurposeChange("");
+                  setIsOpen(!isOpen);
+                }}
                 className="block px-4 py-2 hover:bg-gray-100 text-neutral-600"
               >
                 None
