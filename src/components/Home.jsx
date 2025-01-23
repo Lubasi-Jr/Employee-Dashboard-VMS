@@ -1,14 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import VisitCard from "./VisitCard";
 import { Search } from "lucide-react";
 import { Plus } from "lucide-react";
 import DatePicker from "./Filters/DatePicker";
 import DropDown from "./Filters/DropDown";
+import axiosInstance from "../api/axiosInstance";
+import { ClipLoader } from "react-spinners";
 
 const Home = () => {
+  const [allVisits, setVisits] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [datePicked, setDate] = useState("");
   const [purpose, setPurpose] = useState("");
   const [name, setName] = useState("");
+
+  useEffect(() => {
+    getVisits();
+  }, []);
+
+  async function getVisits() {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/Visits");
+      setVisits(response.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  }
 
   function handleDateChange(date) {
     setDate(date);
@@ -19,7 +40,7 @@ const Home = () => {
 
   function searchForVisits() {
     console.log(`Date ${datePicked}`);
-    console.log(`Name ${name}`);
+    //console.log(`Name ${name}`);
     console.log(`Purpose ${purpose}`);
   }
 
@@ -46,7 +67,7 @@ const Home = () => {
           /> */}
           <DropDown handlePurposeChange={handlePurposeChange} />
         </div>
-        <div className="flex flex-col gap-0">
+        {/* <div className="flex flex-col gap-0">
           <label htmlFor="" className="text-base">
             Name
           </label>
@@ -58,7 +79,7 @@ const Home = () => {
             type="text"
             className="rounded-md focus:border-cecOrange focus:ring-cecOrange truncate w-[250px] mt-1"
           />
-        </div>
+        </div> */}
         <div className="flex items-center justify-center gap-6">
           <button
             type="button"
@@ -68,10 +89,43 @@ const Home = () => {
             <Search size={30} />
           </button>
         </div>
+        <h2 className="text-[25px] mt-8">OR</h2>
+        <button
+          onClick={getVisits}
+          className="border border-cecOrange rounded-md px-2 py-2 w-[170px]  lg:w-[250px] whitespace-nowrap text-base mt-8 font-semibold text-center h-[41px]  text-cecOrange hover:text-white hover:bg-cecOrange"
+        >
+          Reset
+        </button>
       </div>
-      <div className="rounded-md w-full h-full bg-[#F5F5F5] px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+
+      {/* <div className="rounded-md w-full h-full bg-[#F5F5F5] px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
         <VisitCard id={1} />
-      </div>
+      </div> */}
+      {loading ? (
+        <div className="lg:w-1/2 w-full flex flex-col lg:flex-row lg:gap-9 gap-2 items-center justify-center px-4 py-2">
+          <ClipLoader
+            color="#AD7900"
+            loading={loading}
+            size={150}
+            aria-label="Fetching Visits"
+          />
+        </div>
+      ) : (
+        <div className="rounded-md w-full h-full bg-[#F5F5F5] px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+          {allVisits ? (
+            allVisits.map((visit, index) => (
+              <VisitCard key={index} id={visit?.visit_id} visit={visit} />
+            ))
+          ) : (
+            <div className="col-span-1 md:col-span-3 lg:col-span-4 flex flex-col font-raleway ">
+              <h1>No Visits that match this criteria</h1>
+              <p className="text-md text-cecOrange font-raleway">
+                Adjust filters and search again OR Reset
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

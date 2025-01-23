@@ -53,6 +53,10 @@ const Visitors = () => {
             <Search size={30} />
           </button>
         </div>
+        <h2 className="text-[25px] mt-8">OR</h2>
+        <button className="border border-cecOrange rounded-md px-2 py-2 w-[170px]  lg:w-[250px] whitespace-nowrap text-base mt-8 font-semibold text-center h-[41px]  text-cecOrange hover:text-white hover:bg-cecOrange">
+          Reset
+        </button>
       </div>
       <div className="rounded-md w-full h-full bg-[#F5F5F5] px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
         <VisitorCard id={1} />

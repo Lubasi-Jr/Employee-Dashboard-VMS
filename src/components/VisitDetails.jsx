@@ -1,8 +1,9 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import BackButton from "./Buttons/BackButton";
 import { DoorOpen, DoorClosed } from "lucide-react";
 import { Save } from "lucide-react";
+import axiosInstance from "../api/axiosInstance";
 
 const STATES = {
   hideModal: true,
@@ -23,18 +24,44 @@ function reducer(state, action) {
 }
 
 const VisitDetails = () => {
-  const [states, dispatch] = useReducer(reducer, STATES);
+  const [details, setVisitDetails] = useState();
 
-  const { visitId } = useParams();
+  useEffect(() => {
+    try {
+      //Get ID of this visit
+      let id;
+      const path = window.location.pathname; // Get the full path, e.g., '/visitor/1'
+      const parts = path.split("/"); // Split by '/'
+      id = parts[parts.length - 1];
+
+      const visitData = getDetails(id);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  const getDetails = async (visit_id) => {
+    try {
+      const response = await axiosInstance.get(`/Visits/${visit_id}`);
+      setVisitDetails(response.data);
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
+  const [states, dispatch] = useReducer(reducer, STATES);
 
   const checkVisitorInOrOut = () => {
     dispatch({ type: "close", payload: true });
     if (states.purpose == "check-in") {
       //Execute Check-in route
-      console.log(`Checking In visitor... ${visitId}`);
+      console.log(`Checking In visitor... ${details?.visitor_id}`);
     } else {
       //Execute Check-out route
-      console.log(`Checking Out visitor... ${visitId}`);
+      console.log(`Checking Out visitor... ${details?.visitor_id}`);
     }
   };
 
@@ -46,9 +73,9 @@ const VisitDetails = () => {
           id="main-details"
           className="flex items-center justify-center flex-col gap-1 text-center mb-8 font-oxygen"
         >
-          <h1 className="truncate md:text-lg text-base  ">Phil Foden</h1>
-          <h1 className="font-bold text-3xl truncate">33456/65/1</h1>
-          <h2 className="text-neutral-500 text-base truncate">ABSA Bank Ltd</h2>
+          <h1 className="  font-bold text-3xl truncate">{`${details?.visitor?.first_name} ${details?.visitor?.last_name}`}</h1>
+          <h1 className="truncate md:text-lg text-base">{`${details?.visitor?.phone}`}</h1>
+          <h2 className="text-neutral-500 text-base truncate">{`${details?.visitor?.company_name}`}</h2>
         </div>
         <div
           id="generall-info"
@@ -57,33 +84,45 @@ const VisitDetails = () => {
           <h1 className="truncate md:text-lg text-base  font-bold ">
             Visit Date:{" "}
             <span className="text-neutral-500 text-base truncate font-normal">
-              03/01/2025
+              {`${details?.visit_date}`}
             </span>
           </h1>
           <h1 className="truncate md:text-lg text-base  font-bold ">
             PhoneNo:{" "}
             <span className="text-neutral-500 text-base truncate font-normal">
-              +260 78845321
+              {`${details?.visitor?.phone}`}
             </span>
           </h1>
 
           <h1 className="truncate md:text-lg text-base  font-bold ">
             Purpose:{" "}
             <span className="text-neutral-500 text-base truncate font-normal">
-              Business
+              {`${details?.purpose}`}
             </span>
           </h1>
 
           <h1 className="truncate md:text-lg text-base  font-bold ">
             Time-In:{" "}
             <span className="text-neutral-500 text-base truncate font-normal">
-              09:40
+              {details?.time_in == "0001-01-01T00:00:00"
+                ? "N/A"
+                : new Date(details?.time_in).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
             </span>
           </h1>
           <h1 className="truncate md:text-lg text-base  font-bold ">
             Time-Out:{" "}
             <span className="text-neutral-500 text-base truncate font-normal">
-              N/A
+              {details?.time_out == "0001-01-01T00:00:00"
+                ? "N/A"
+                : new Date(details?.time_in).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
             </span>
           </h1>
         </div>
