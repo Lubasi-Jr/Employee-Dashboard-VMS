@@ -1,15 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../api/axiosInstance";
 import VisitorCard from "./VisitorCard";
 import { Search } from "lucide-react";
-import { Plus } from "lucide-react";
+import { ClipLoader } from "react-spinners";
 
 const Visitors = () => {
+  const [allVisitors, setAllVisitors] = useState();
+  const [loading, setLoading] = useState(true);
+
   const [name, setName] = useState("");
   const [nrc, setNRC] = useState("");
 
-  function searchForVisitors() {
-    console.log(`Name ${name}`);
+  useEffect(() => {
+    getVisitors();
+  }, []);
+
+  const getVisitors = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/Visitors");
+      setAllVisitors(response.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  async function searchForVisitors() {
     console.log(`NRC ${nrc}`);
+
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/Visitors/Search", {
+        params: {
+          idNumber: nrc,
+        },
+      });
+      setAllVisitors(response.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
   }
 
   return (
@@ -18,7 +51,7 @@ const Visitors = () => {
         <h2 className="font-oxygen font-bold">Search By:</h2>
       </div>
       <div className="rounded-md w-full h-auto bg-[#F5F5F5] px-4 py-4 flex flex-col lg:flex-row items-start justify-start gap-5">
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <label htmlFor="" className="text-base">
             Name
           </label>
@@ -30,7 +63,7 @@ const Visitors = () => {
             type="text"
             className="rounded-md focus:border-cecOrange focus:ring-cecOrange truncate w-[250px]"
           />
-        </div>
+        </div> */}
         <div className="flex flex-col gap-2">
           <label htmlFor="" className="text-base">
             NRC
@@ -58,9 +91,35 @@ const Visitors = () => {
           Reset
         </button>
       </div>
-      <div className="rounded-md w-full h-full bg-[#F5F5F5] px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-        <VisitorCard id={1} />
-      </div>
+      {loading ? (
+        <div className="lg:w-1/2 w-full flex flex-col lg:flex-row lg:gap-9 gap-2 items-center justify-center px-4 py-2">
+          <ClipLoader
+            color="#AD7900"
+            loading={loading}
+            size={150}
+            aria-label="Fetching Visits"
+          />
+        </div>
+      ) : (
+        <div className="rounded-md w-full h-full bg-[#F5F5F5] px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+          {allVisitors ? (
+            allVisitors.map((visitor, index) => (
+              <VisitorCard
+                key={index}
+                id={visitor?.visitor_id}
+                visitor={visitor}
+              />
+            ))
+          ) : (
+            <div className="col-span-1 md:col-span-3 lg:col-span-4 flex flex-col font-raleway ">
+              <h1>No Visitors to display</h1>
+              <p className="text-md text-cecOrange font-raleway">
+                Adjust filters and search again OR Reset
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

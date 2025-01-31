@@ -98,9 +98,6 @@ const Home = () => {
         </button>
       </div>
 
-      {/* <div className="rounded-md w-full h-full bg-[#F5F5F5] px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-        <VisitCard id={1} />
-      </div> */}
       {loading ? (
         <div className="lg:w-1/2 w-full flex flex-col lg:flex-row lg:gap-9 gap-2 items-center justify-center px-4 py-2">
           <ClipLoader

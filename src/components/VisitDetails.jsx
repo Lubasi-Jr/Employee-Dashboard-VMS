@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import BackButton from "./Buttons/BackButton";
 import { DoorOpen, DoorClosed } from "lucide-react";
 import { Save } from "lucide-react";
@@ -25,22 +25,22 @@ function reducer(state, action) {
 
 const VisitDetails = () => {
   const [details, setVisitDetails] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      //Get ID of this visit
-      let id;
-      const path = window.location.pathname; // Get the full path, e.g., '/visitor/1'
-      const parts = path.split("/"); // Split by '/'
-      id = parts[parts.length - 1];
+    //Get ID of this visit
+    let id;
+    const path = window.location.pathname; // Get the full path, e.g., '/visitor/1'
+    const parts = path.split("/"); // Split by '/'
+    id = parts[parts.length - 1];
 
-      const visitData = getDetails(id);
-    } catch (error) {
-      console.log(error);
+    if (id) {
+      const storedVisitor = sessionStorage.getItem(`visit${id}`);
+      setVisitDetails(storedVisitor ? JSON.parse(storedVisitor) : {});
     }
   }, []);
 
-  const getDetails = async (visit_id) => {
+  /*  const getDetails = async (visit_id) => {
     try {
       const response = await axiosInstance.get(`/Visits/${visit_id}`);
       setVisitDetails(response.data);
@@ -50,18 +50,62 @@ const VisitDetails = () => {
       console.log(error);
       throw error;
     }
-  };
+  }; */
 
   const [states, dispatch] = useReducer(reducer, STATES);
 
-  const checkVisitorInOrOut = () => {
+  const checkVisitorInOrOut = async () => {
     dispatch({ type: "close", payload: true });
     if (states.purpose == "check-in") {
       //Execute Check-in route
       console.log(`Checking In visitor... ${details?.visitor_id}`);
+
+      try {
+        const response = axiosInstance.put(
+          `/Visits/${details?.visit_id}/Verify`,
+          null,
+          {
+            params: {
+              timeIn: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }),
+            },
+          }
+        );
+
+        console.log("Verify time in successful");
+        console.log(response.data);
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       //Execute Check-out route
       console.log(`Checking Out visitor... ${details?.visitor_id}`);
+
+      try {
+        const response = axiosInstance.put(
+          `/Visits/${details?.visit_id}/Verify`,
+          null,
+          {
+            params: {
+              timeOut: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }),
+            },
+          }
+        );
+
+        console.log("Verify time out successful");
+        console.log(response.data);
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -104,24 +148,26 @@ const VisitDetails = () => {
           <h1 className="truncate md:text-lg text-base  font-bold ">
             Time-In:{" "}
             <span className="text-neutral-500 text-base truncate font-normal">
-              {details?.time_in == "0001-01-01T00:00:00"
+              {details?.time_in === null
                 ? "N/A"
-                : new Date(details?.time_in).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
+                : new Date(details?.time_in).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                    timeZone: "Africa/Lusaka",
                   })}
             </span>
           </h1>
           <h1 className="truncate md:text-lg text-base  font-bold ">
             Time-Out:{" "}
             <span className="text-neutral-500 text-base truncate font-normal">
-              {details?.time_out == "0001-01-01T00:00:00"
+              {details?.time_out === null
                 ? "N/A"
-                : new Date(details?.time_in).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
+                : new Date(details?.time_out).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                    timeZone: "Africa/Lusaka",
                   })}
             </span>
           </h1>
